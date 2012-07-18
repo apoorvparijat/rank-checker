@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Domain:</b>
+  <%= @rank.domain %>
+</p>
+
+<p>
+  <b>Keyword:</b>
+  <%= @rank.keyword %>
+</p>
+
+<p>
+  <b>Page:</b>
+  <%= @rank.page %>
+</p>
+
+<p>
+  <b>Position:</b>
+  <%= @rank.position %>
+</p>
+
+<p>
+  <b>Rank:</b>
+  <%= @rank.rank %>
+</p>
+
+<p>
+  <b>Ip:</b>
+  <%= @rank.ip %>
+</p>
+
+
+<%= link_to 'Edit', edit_rank_path(@rank) %> |
+<%= link_to 'Back', ranks_path %>

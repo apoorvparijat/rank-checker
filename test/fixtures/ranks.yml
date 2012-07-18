@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  domain: MyString
+  keyword: MyText
+  page: 1
+  position: 1
+  rank: 1
+  ip: MyString
+
+two:
+  domain: MyString
+  keyword: MyText
+  page: 1
+  position: 1
+  rank: 1
+  ip: MyString
