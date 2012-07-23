@@ -28,8 +28,8 @@ test:
   database: rank-checker_test
   pool: 5
   username: root
-  password: shonen
   host: localhost
+  socket: /Applications/XAMPP/xamppfiles/var/mysql/mysql.sock
 
 production:
   adapter: mysql2
