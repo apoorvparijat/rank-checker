@@ -17,4 +17,14 @@ class RankCheckerController < ApplicationController
       format.json {render :json => json_str.to_json}
     end
   end
+  
+  def api
+    r = Checker.new
+    r.domain = params[:domain]
+    rank = r.find_rank_for_keyword params[:keyword]
+    respond_to do |format|
+      format.html
+      format.json {render :json => r.to_json}
+    end
+  end
 end

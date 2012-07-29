@@ -1,7 +1,7 @@
 require "httpclient"
 
 class Checker
-	attr_accessor :domain, :keyword, :position, :page, :progress
+	attr_accessor :rank, :domain, :keyword, :position, :page, :progress
 	
 	def initialize
 	  self.progress = 0
@@ -54,7 +54,7 @@ class Checker
 				break if self.position != -1
 			end
 		end
-
+    @rank = (@page-1)*10 + @position 
 		rank << self.page << self.position
 		self.progress = 100
 		return rank
@@ -66,7 +66,7 @@ class Checker
       return "Not ranking"
 		end
 		
-		rank = (@page-1)*10 + @position 
+		@rank = (@page-1)*10 + @position 
 		str = "Domain '#{domain}' ranks for keyword '#{keyword}' at '#{position}' position on page '#{page}'.\n Rank is #{rank}"	
 	end
 	
@@ -75,12 +75,20 @@ class Checker
     if(position == -1)
       return 0
     end
-	  rank = (@page-1)*10 + @position
+	  @rank = (@page-1)*10 + @position
+  end
+  
+  def to_json
+    if @position == -1
+      return "{}"
+		end
+		
+		json = "{\"domain\":\"#{domain}\",\"keyword\":\"#{keyword}\",\"position\":\"#{position}\",\"page\":\"#{page}\",\"rank\":\"#{@rank}\"}"
   end
 
 end
 
 #r = Checker.new
 #r.domain = "vaidikkapoor.info"
-#rank = r.find_rank_for_keyword "vaidik kapoor"
-#puts r.to_s
+#rank = r.find_rank_for_keyword "vaidikkapoor"
+#puts r.to_json

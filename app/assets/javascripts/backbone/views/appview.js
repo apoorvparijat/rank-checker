@@ -63,11 +63,12 @@ $(function(){
 			Ranks.Count++;
 			var params = this.newAttributes(e);
 			params["thread_str"] = Ranks.Count;
+			params["rank"] = 0;
 			var t = this;
+			r = new RankList.Models.Rank(params);
+			r.progress_id = Ranks.Count;
+			Ranks.add(r);
 			$.getJSON("/rank-checker",params,function(data){
-				r = new RankList.Models.Rank(data);
-				r.progress_id = Ranks.Count;
-				Ranks.add(r);
 				t.updateResult(r)
 			});
 			
