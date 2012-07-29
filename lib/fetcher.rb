@@ -20,7 +20,7 @@ class FetcherThread
   end
   
   def result
-    json = "{progress: #{@c.progress}, rank : #{@rank}, page : #{@c.page}, position: #{@c.position }}"
+    json = "{\"progress\": #{@c.progress}, \"rank\" : \"#{@rank}\", \"page\" : \"#{@c.page}\", \"position\": \"#{@c.position }\"}"
   end
   
 end
@@ -31,6 +31,10 @@ class Fetcher
   @@ft = Hash.new
   @@thread_count = 0
   def server
+    t = Thread.new{
+      @@ft = Hash.new
+      sleep 50
+    }
     @@s = TCPServer.open(2000)
     loop do
       client = @@s.accept
@@ -62,8 +66,11 @@ class Fetcher
         }
       elsif (type == "rails")
         thread_str = client.gets.chomp
-        result = @@ft[thread_str].result
-        client.puts result
+        if (!@@ft.has_key?(thread_str))
+        else
+          result = @@ft[thread_str].result
+          client.puts result
+        end
         client.close
       else
         @@thread_count += 1

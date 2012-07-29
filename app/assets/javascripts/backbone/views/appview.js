@@ -3,7 +3,7 @@ $(function(){
 	RankList.Views.RankView = Backbone.View.extend({
 		tagName: "li",
 		events: {},
-		template: _.template('<li> <%= domain %>  -  <%= keyword %> - <%= rank %> </li>'),
+		template: _.template('<li id="progress-<%= Ranks.Count %>"> <%= domain %>  -  <%= keyword %> - <span class="rank"><%= rank %></span> - <span class="progress">0</span></li>'),
 		render: function (){
 			var rank = this.model.toJSON();
 			//alert("render: " + JSON.stringify(todo));
@@ -17,6 +17,7 @@ $(function(){
 			"submit form#new_rank" : "createRank"
 		},
 		initialize: function(){
+			Ranks.Count = 0
 			_.bindAll(this, 'addOne', 'addAll','render');
 			Ranks.bind("add", this.addOne);
 			Ranks.bind("reset", this.addAll);
@@ -39,17 +40,41 @@ $(function(){
 				keyword: rank_form_data["rank[keyword]"]
 			};
 		},
+		updateResult: function(r){
+			var t = this
+			Ranks.interval = setInterval(function(){
+				$.getJSON("/rank-checker/"+r.progress_id,function(data){
+					data = jQuery.parseJSON(data);
+					$("#progress-"+r.progress_id+" > span.progress").text(data.progress);
+					if(data.progress >= 100){
+						r.rank = data.rank;
+						t.updateRank(r);
+						clearInterval(Ranks.interval);
+					}
+				})
+			},500);
+		},
+		updateRank: function(r){
+			$("#progress-"+r.progress_id+" > span.rank").text(r.rank);
+			//r.save();
+		},
 		createRank: function(e){
 			e.preventDefault();
+			Ranks.Count++;
 			var params = this.newAttributes(e);
+			params["thread_str"] = Ranks.Count;
+			var t = this;
 			$.getJSON("/rank-checker",params,function(data){
 				r = new RankList.Models.Rank(data);
+				r.progress_id = Ranks.Count;
 				Ranks.add(r);
-				
+				t.updateResult(r)
 			});
 			
 			//r.save();
 			//Ranks.create(params);
 		}
 	});
+	
+	
 });

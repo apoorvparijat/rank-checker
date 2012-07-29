@@ -4,6 +4,7 @@ RankChecker::Application.routes.draw do
 
   root :to => "rank_checker#index"
   match "rank-checker" => "rank_checker#index"
+  match "rank-checker/:id" => "rank_checker#show"
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
