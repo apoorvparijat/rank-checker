@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+gem 'faraday'
 group :development, :test do 
 	gem 'rspec-rails'
 	gem 'factory_girl_rails'

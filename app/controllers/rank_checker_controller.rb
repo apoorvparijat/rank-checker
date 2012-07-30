@@ -1,6 +1,9 @@
 require "fetcher-socket"
 class RankCheckerController < ApplicationController
   def index
+    rip = request.remote_ip
+    rip = rip.to_s.gsub /\./, ""
+    params["thread_str"] = "#{rip}-#{Time.now.to_i}"+"-"+ params["thread_str"]
     FetcherSocket::get_rank params["thread_str"], params[:domain], params[:keyword]
     params[:rank] = "0"
     respond_to do |format|
@@ -10,7 +13,7 @@ class RankCheckerController < ApplicationController
   end
   
   def show
-    json_str = FetcherSocket::get_progress params[:id]
+    json_str = FetcherSocket::get_progress params["id"]
     json_str = json_str.chomp if json_str != nil
     respond_to do |format|
       format.html

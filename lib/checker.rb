@@ -1,4 +1,4 @@
-require "httpclient"
+require "faraday"
 
 class Checker
 	attr_accessor :rank, :domain, :keyword, :position, :page, :progress
@@ -16,10 +16,13 @@ class Checker
 
 
 	def get_search_result_at_page (pn)
-		http = HTTPClient.new(:agent_name => 'Mozilla/5.001 (windows; U; NT4.0; en-US; rv:1.0) Gecko/25250101')
-		http.follow_redirect_count = 2
+		#http = HTTPClient.new(:agent_name => 'Mozilla/5.001 (windows; U; NT4.0; en-US; rv:1.0) Gecko/25250101')
+		conn = Faraday.new
+    #headers = [['Accept','text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'],['User-Agent','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_4)']]
+    conn.headers = {'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_4)','Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'}
+    
 		start = (pn-1)*10
-		http.get "http://www.google.com/search?q=#{keyword}&start=#{start}"
+		conn.get("http://www.google.com/search?q=#{keyword}&start=#{start}")
 	end
 
 	def get_result_position_in (content)
@@ -31,7 +34,7 @@ class Checker
 				#puts m + "\n------------"
 				m.gsub! /(<[b]>|<\/[b]>|")/, ''
 				@position += 1
-				if(Regexp.new("<cite>[^/]*?"+ domain + ".*?/.*?</cite>") =~ m)
+				if(Regexp.new("<cite>[^/]*?"+ domain + "/.*?</cite>") =~ m)
 					return position
 				else
 				  not_matched = 1
@@ -47,7 +50,7 @@ class Checker
 		rank = []
 		20.times do |x|
 		  self.progress = (x/20.0)*100.0
-			content = get_search_result_at_page(x+1).content
+			content = get_search_result_at_page(x+1).body
 			if (domain_regex =~ content)
         self.page = x+1
 				self.position = get_result_position_in content
@@ -88,7 +91,7 @@ class Checker
 
 end
 
-#r = Checker.new
-#r.domain = "vaidikkapoor.info"
-#rank = r.find_rank_for_keyword "vaidikkapoor"
-#puts r.to_json
+r = Checker.new
+r.domain = "vaidikkapoor.info"
+rank = r.find_rank_for_keyword "vaidikkapoor"
+puts r.to_json

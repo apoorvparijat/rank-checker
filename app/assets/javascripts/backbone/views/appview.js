@@ -43,7 +43,7 @@ $(function(){
 		updateResult: function(r){
 			var t = this
 			Ranks.interval = setInterval(function(){
-				$.getJSON("/rank-checker/"+r.progress_id,function(data){
+				$.getJSON("/rank-checker/"+r.thread_str,function(data){
 					data = jQuery.parseJSON(data);
 					$("#progress-"+r.progress_id+" > span.progress").text(data.progress);
 					if(data.progress >= 100){
@@ -69,6 +69,7 @@ $(function(){
 			r.progress_id = Ranks.Count;
 			Ranks.add(r);
 			$.getJSON("/rank-checker",params,function(data){
+				r.thread_str = data.thread_str;
 				t.updateResult(r)
 			});
 			
