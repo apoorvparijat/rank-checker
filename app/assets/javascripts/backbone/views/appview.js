@@ -1,5 +1,6 @@
 $(function(){
 	Ranks = new RankList.Collections.Ranks;
+	Ranks.interval = {};
 	RankList.Views.RankView = Backbone.View.extend({
 		tagName: "li",
 		events: {},
@@ -42,14 +43,14 @@ $(function(){
 		},
 		updateResult: function(r){
 			var t = this
-			Ranks.interval = setInterval(function(){
+			Ranks.interval[r.thread_str] = setInterval(function(){
 				$.getJSON("/rank-checker/"+r.thread_str,function(data){
 					data = jQuery.parseJSON(data);
 					$("#progress-"+r.progress_id+" > span.progress").text(data.progress);
 					if(data.progress >= 100){
 						r.rank = data.rank;
 						t.updateRank(r);
-						clearInterval(Ranks.interval);
+						clearInterval(Ranks.interval[r.thread_str]);
 					}
 				})
 			},500);
