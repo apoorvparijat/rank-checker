@@ -2,9 +2,9 @@ $(function(){
 	Ranks = new RankList.Collections.Ranks;
 	Ranks.interval = {};
 	RankList.Views.RankView = Backbone.View.extend({
-		tagName: "li",
+		tagName: "tr",
 		events: {},
-		template: _.template('<li id="progress-<%= Ranks.Count %>"> <%= domain %>  -  <%= keyword %> - <span class="rank"><%= rank %></span> - <span class="progress">0</span></li>'),
+		template: _.template('<tr id="progress-<%= Ranks.Count %>" class="domains-list"> <td class="table-domain"><%= domain %></td><td class="table-keyword"><%= keyword %></td><td class="rank"><%= rank %></td><td class="progress">0</td></tr>'),
 		render: function (){
 			var rank = this.model.toJSON();
 			//alert("render: " + JSON.stringify(todo));
@@ -27,7 +27,7 @@ $(function(){
 		},
 		addOne: function(rank){
 			var view = new RankView({model: rank});
-			this.$("#ranks").append(view.render());
+			this.$("#ranks").prepend(view.render());
 		},
 
 		addAll: function(){
@@ -46,7 +46,7 @@ $(function(){
 			Ranks.interval[r.thread_str] = setInterval(function(){
 				$.getJSON("/rank-checker/"+r.thread_str,function(data){
 					data = jQuery.parseJSON(data);
-					$("#progress-"+r.progress_id+" > span.progress").text(data.progress);
+					$("#progress-"+r.progress_id+" > td.progress").text(data.progress);
 					if(data.progress >= 100){
 						r.rank = data.rank;
 						t.updateRank(r);
@@ -56,7 +56,7 @@ $(function(){
 			},500);
 		},
 		updateRank: function(r){
-			$("#progress-"+r.progress_id+" > span.rank").text(r.rank);
+			$("#progress-"+r.progress_id+" > td.rank").text(r.rank);
 			//r.save();
 		},
 		createRank: function(e){

@@ -2,13 +2,29 @@
 
 <div id="ranklist-app">
 	<form id="new_rank">
-		Domain: <input type="text" name="rank[domain]" value=""/><br />
-		Keyword: <input type="text" name="rank[keyword]" value=""/><br />
-		<input type="submit" value="Check">
+		<input type="text" class="tracker-input" name="rank[domain]" value="domain.com"/>
+		<input type="text" class="tracker-input" name="rank[keyword]" value="keyword"/> 
+		<input class="go-arrow" type="image" height="40" src="assets/go.png">
 	</form>
-	<ul id="ranks">
-
-	</ul>
+	<br/><br/>
+	<table id="ranks">
+		<thead>
+			<tr class="table-header">
+				<td style="min-width:180px">
+					domain
+				</td>
+				<td style="min-width:300px">
+					keyword
+				</td>
+				<td style="min-width:70px">
+					rank
+				</td>
+				<td>
+					&nbsp;&nbsp;
+				</td>
+			</tr>
+		</thead>
+	</table>
 </div>
 
 

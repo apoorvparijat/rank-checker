@@ -1,3 +1,66 @@
 // Place all the styles related to the ranks controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+
+.tracker-input{
+	line-height:20px;
+	border:1px solid #919398;
+	padding:4px;
+	outline:0px;
+	width:250px;
+}
+
+.go-arrow{
+	margin-bottom:-15px;
+	margin-left:-6px;
+}
+
+#ranks{
+	position:relative;
+	width:100%;
+	margin-left:2px;
+	border-collapse:collapse;
+}
+
+#ranks tr{
+
+	td{
+		padding:5px 2px;
+	}
+
+	td:last-child{
+		border-right:3px solid transparent;
+	}
+	
+	&:hover{
+		background-color:#e8e8e8;
+		td:last-child{
+			border-right:3px solid black;
+		}
+	}
+}
+
+
+#ranks thead tr{
+	td{
+		background-color:white;
+		font-color:black;
+		font-weight:bold;
+	}
+	&:hover{
+		td:last-child{
+			border-right:3px solid transparent;
+		}
+	}
+}
+
+.domains-list{
+	font-family: verdana;
+	font-size: 13px;
+	line-height: 25px;
+}
+
+.table-domain{
+	
+}
