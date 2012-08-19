@@ -40,3 +40,4 @@ production:
   username: root
   password: shonen
   host: localhost
+
