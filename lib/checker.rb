@@ -1,9 +1,20 @@
 require "faraday"
 require "cgi"
 
+
+module Logging
+  def logger  msg, speaker, filename
+    return if filename == "debug"
+ 	  f = File.open("/tmp/fs-#{filename}.log","a");
+ 	  f.puts(Time.now.to_s + ": " + speaker + ": " + msg)
+ 	  f.close
+  end
+end
+
+
 class Checker
-	attr_accessor :rank, :domain, :keyword, :position, :page, :progress, :conn, :cookie, :pref, :nid
-	
+	attr_accessor :rank, :domain, :keyword, :position, :page, :progress, :conn, :cookie, :pref, :nid, :url, :path, :progressMsg
+	include Logging
 	def initialize
 	  self.progress = 0
 	  self.position = -1
@@ -12,7 +23,7 @@ class Checker
 	  self.conn = Faraday.new
     self.conn.headers = {'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_4)','Accept' => 'text/html,application/xhtml+xml'}
     self.conn.headers["Cookie"] = ""
- 	 end
+  end
 
 	def get_search_result_at_page (pn)
 		#http = HTTPClient.new(:agent_name => 'Mozilla/5.001 (windows; U; NT4.0; en-US; rv:1.0) Gecko/25250101')
@@ -30,8 +41,12 @@ class Checker
 			matched.each do |m|
 				#puts m + "\n------------"
 				m.gsub! /(<[b]>|<\/[b]>|")/, ''
+				m.gsub! /(http:\/\/|https:\/\/)/,''
 				@position += 1
-				if(Regexp.new("<cite>[^/]*?"+ domain + "/.*?</cite>") =~ m)
+				citeDomain = Regexp.new("<cite>([^/]*?"+ domain + "(/.*?))</cite>")
+				matchedData = citeDomain.match(m)
+				if(matchedData)
+				  @url,@path = matchedData[1],matchedData[2]
 					return position
 				else
 				  not_matched = 1
@@ -47,6 +62,7 @@ class Checker
 		domain_regex = Regexp.new ("<cite>.*?"+domain+".*?</cite>") 
 		rank = []
 		20.times do |x|
+		  @progressMsg = "Checking page " + x.to_s + " .."
 		  self.progress = (x/20.0)*100.0
 			result = get_search_result_at_page(x+1)
 			if(result.headers["set-cookie"])
@@ -55,8 +71,8 @@ class Checker
 			  @nid = @cookie["NID"].first != nil ? @cookie['NID'].first : @nid
       end
       headers = result.headers.to_s
-		  str_msg = "#{result.status} - #{@domain} - #{@keyword}" + "\n #{headers} \n -- #{result.body} \n -- "
-      log_msg str_msg, "detailed"
+		  #puts "logging",str_msg
+      #logger str_msg, "checker" , "detailed"
 		  
 			if(result.status == 302)
         log_type = "error"
@@ -66,7 +82,10 @@ class Checker
   		  puts "--------"
   		  puts result.headers.to_s
   		  puts "--------\n"
-			  log_msg "#{result.status} - #{@domain} - #{@keyword}" + "\n #{headers} \n", log_type
+			  logger "\n#{result.status} - #{@domain} - #{@keyword}" + "\n #{headers} \n", "checker" ,log_type
+			  str_msg = "#{result.status} - #{@domain} - #{@keyword}" + "\n #{headers} \n -- #{result.body} \n -- "
+			  logger str_msg, "checker" , "detailed"
+			  @progressMsg = "<span class='error'>Google.com redirecting request.</span>"
 			  break;
       end
 
@@ -76,10 +95,11 @@ class Checker
 				self.position = get_result_position_in content
 				break if self.position != -1
 			end
-			sleep 0.8
+			sleep 0.3
 		end
     @rank = (@page-1)*10 + @position 
 		rank << self.page << self.position
+		@progressMsg = "Done"
 		self.progress = 100
 		return rank
 
@@ -95,7 +115,10 @@ class Checker
 	end
 	
 	def getRank keyword
+	  logger "About to call - find_rank_for_keyword.", "checker", "debug"
+	  @progressMsg = "Started checking google.com"
 	  find_rank_for_keyword keyword
+	  logger "Returned from - find_rank_for_keyword.", "checker", "debug"
     if(position == -1)
       return 0
     end
@@ -107,20 +130,12 @@ class Checker
       return "{}"
 		end
 		
-		json = "{\"domain\":\"#{domain}\",\"keyword\":\"#{keyword}\",\"position\":\"#{position}\",\"page\":\"#{page}\",\"rank\":\"#{@rank}\"}"
+		json = "{\"domain\":\"#{domain}\",\"keyword\":\"#{keyword}\",\"position\":\"#{position}\",\"page\":\"#{page}\",\"rank\":\"#{@rank}\",\"url\":\"#{@url}\",\"path\":\"#{@path}\"}"
   end
-  
-  
-  def log_msg msg, type
-    f = File.open(type + ".log","a")
-    f.puts Time.now.to_s + ": " + msg + "\n-------------------\n"
-    f.close
-  end
-  
 
 end
 
 #r = Checker.new
-#r.domain = "vaidikkapoor.info"
-#rank = r.find_rank_for_keyword "vaidikkapoor"
+#r.domain = "facebook.com"
+#rank = r.find_rank_for_keyword "apoorv parijat"
 #puts r.to_json

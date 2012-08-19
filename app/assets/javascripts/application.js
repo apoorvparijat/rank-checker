@@ -18,6 +18,10 @@
 //= require backbone_datalink
 //= require backbone/rank_checker
 //= require_tree .
+_.templateSettings = {
+    interpolate: /\{\{\=(.+?)\}\}/g,
+    evaluate: /\{\{(.+?)\}\}/g
+};
 
 jQuery.fn.serializeObject = function() {
   var arrayData, objectData;

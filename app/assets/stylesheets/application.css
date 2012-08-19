@@ -19,32 +19,47 @@
 
 body{
 	margin-top:10px;
-	background-color:black; !important
+	min-width:900px;
+	padding:10px 0px 0px 10px;
+	
 }
-
+.logo > h1 {
+	line-height:23px;
+}
 .header{
 	margin-bottom:20px;
 }
 
 .wrapper{
-	margin-left:10px;
+	background-color:white;
+	position:relative;
 }
 
 .left-section{
+	width:60%;
+	min-height:1400px;
 	min-width:400px;
-	width:50%;
 }
 
 .right-section
 {
+	position:absolute;
+	right:0px;
+	width:40%;
 	box-shadow:inset 1px 1px 4px #000;
-	height:100%;
-	float:right;
+	height:110%;
+	color:white;
+	margin-right:0px;
 	background-color: #333;
-	margin-right:-1px;
-	min-width:300px;
 	margin-top:-10px;
-	width:50%;
 	border-left:1px solid #666;
 }
 
+.right-content{
+	position:fixed;
+	padding:15px 10px;
+}
+
+.right-content span{
+		line-height:30px;
+}

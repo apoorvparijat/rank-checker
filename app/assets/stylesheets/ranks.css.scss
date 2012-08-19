@@ -3,30 +3,37 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 
-.tracker-input{
+.tracker-input, input[type="text"]{
 	line-height:20px;
 	border:1px solid #919398;
 	padding:4px;
 	outline:0px;
 	width:250px;
+	border-radius:0px;
+	
 }
 
 .go-arrow{
-	margin-bottom:-15px;
-	margin-left:-6px;
+	margin-bottom:10px;
+	margin-left:-4px;
+	width:auto;
 }
 
 #ranks{
 	position:relative;
 	width:100%;
-	margin-left:2px;
 	border-collapse:collapse;
+	z-index:100;
+	margin-left:1px;
 }
 
 #ranks tr{
 
 	td{
 		padding:5px 2px;
+		&:hover{
+			
+		}
 	}
 
 	td:last-child{
@@ -61,6 +68,37 @@
 	line-height: 25px;
 }
 
-.table-domain{
+.details{
+	display:none;
+	.pane-el{
+		display:none;
+	}
+	.pane-link a{
+		color:"blue" !important;
+		&:visited{
+			color:"blue" !important; 
+		}
+	}
+}
+
+.progress-holder{
+	.message{
+		font-size:10px;
+		font-style:italic;
+		position:absolute;
+	}
+	
+	.progress{
+		margin-bottom:0px;
+	}
 	
 }
+
+#ranks .tr-highlighted{
+	background-color:#e8e8e8;
+	td:last-child{
+		border-right: 3px solid black;
+	}
+
+}
+

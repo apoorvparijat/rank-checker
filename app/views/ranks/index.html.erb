@@ -1,22 +1,53 @@
+<%content_for(:head) do %>
+	<%= javascript_include_tag "jquery.animate-color.js" %>
+<%end%>
 
+<script type="text/html" id="details-template">
+	<div class="details" id="details-progress-{{=progress_id}}">
+		<span class="pane-domain">
+			<h1>{{= domain }}</h1>
+		</span>
+		<span class="pane-keyword">
+			{{= keyword }}
+		</span>
+		<div class="progress-holder" id="details-update-{{=progress_id}}">
+			<div class="progress progress-striped" style="height:4px;">
+				<div class="bar" style="width:100%;background-color:#558899">
+				</div>
+			</div>
+			<div class="message">{{=message}}</div>
+		</div><br />
+		<div class="pane-el pane-rank">
+		
+		</div>
+		<div class="pane-el pane-page">
+		
+		</div>
+		<span class="pane-el pane-path">
+		</span><br />
+		<span class="pane-el pane-link">
+			<a href="{{=url}}" target="_blank">{{=url}}</a>
+		</span>
+	</div>
+</script>
 
 <div id="ranklist-app">
 	<form id="new_rank">
-		<input type="text" class="tracker-input" name="rank[domain]" value="domain.com"/>
-		<input type="text" class="tracker-input" name="rank[keyword]" value="keyword"/> 
+		<input type="text" class="tracker-input" name="rank[domain]" value="facebook.com"/>
+		<input type="text" class="tracker-input" name="rank[keyword]" value="apoorv parijat"/> 
 		<input class="go-arrow" type="image" height="40" src="assets/go.png">
 	</form>
 	<br/><br/>
 	<table id="ranks">
 		<thead>
 			<tr class="table-header">
-				<td style="min-width:180px">
+				<td style="min-width:150px">
 					domain
 				</td>
-				<td style="min-width:300px">
+				<td style="min-width:200px">
 					keyword
 				</td>
-				<td style="min-width:70px">
+				<td style="min-width:50px">
 					rank
 				</td>
 				<td>

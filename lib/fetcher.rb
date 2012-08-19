@@ -2,7 +2,7 @@ require 'socket'                # Get sockets from stdlib
 require_relative 'checker'
 
 class FetcherThread
-  
+  include Logging
   attr_accessor :thread_id,  :domain, :keyword, :rank, :thread_str, :client, :accessed
   
   def initialize
@@ -13,17 +13,20 @@ class FetcherThread
   def run
       
       @c.domain = @domain
+      logger "Checker initialized with domain.", "fetcher-thread", "debug"
       @rank = @c.getRank @keyword
+      logger "Returned after getting rank from checker.", "fetcher-thread", "debug"
   end
   
   def result
-    json = "{\"progress\": #{@c.progress}, \"rank\" : \"#{@rank}\", \"page\" : \"#{@c.page}\", \"position\": \"#{@c.position }\"}"
+    json = "{\"message\":\"#{@c.progressMsg}\",\"progress\": #{@c.progress.to_i}, \"rank\" : \"#{@rank}\", \"page\" : \"#{@c.page}\", \"position\": \"#{@c.position }\",\"url\":\"#{@c.url}\",\"path\":\"#{@c.path}\"}"
   end
   
 end
 
 
 class Fetcher
+  include Logging
   @@threads = Hash.new
   @@ft = Hash.new
   @@thread_count = 0
@@ -98,21 +101,18 @@ class Fetcher
         @@ft[type] = temp_ft
         
         client.puts "Running fetcher thread in background"
+        logger "About to start thread for fetching rank.", "main-thread", "debug"
         @@threads[type] = Thread.new {
+          logger "Background thread started.", "background-thread", "debug"
           @@ft[type].run
-	  logger "#{@@ft[type].thread_id}- #{@@ft[type].domain} | #{@@ft[type].keyword} \n\t #{@@ft[type].result}","background-thread","common"
+          logger "Returned after running.", "background-thread", "debug"
+	        logger "#{@@ft[type].thread_id}- #{@@ft[type].domain} | #{@@ft[type].keyword} \n\t #{@@ft[type].result}","background-thread","common"
           sleep 3
           @@ft[type].accessed = true
         }
-        #client.close
+        client.close
       end
     end
-  end
-
-  def logger  msg, speaker, filename
-	f = File.open("#{filename}.log","a");
-	f.puts(Time.now.to_s + ": " + speaker + ": " + msg)
-	f.close
   end
  
   def init_cleanup
@@ -134,5 +134,3 @@ end
 
 f = Fetcher.new
 f.server
-
-
