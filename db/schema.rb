@@ -13,34 +13,6 @@
 
 ActiveRecord::Schema.define(:version => 20120819112835) do
 
-  create_table "bdrb_job_queues", :force => true do |t|
-    t.text     "args"
-    t.string   "worker_name"
-    t.string   "worker_method"
-    t.string   "job_key"
-    t.integer  "taken"
-    t.integer  "finished"
-    t.integer  "timeout"
-    t.integer  "priority"
-    t.datetime "submitted_at"
-    t.datetime "started_at"
-    t.datetime "finished_at"
-    t.datetime "archived_at"
-    t.string   "tag"
-    t.string   "submitter_info"
-    t.string   "runner_info"
-    t.string   "worker_key"
-    t.datetime "scheduled_at"
-  end
-
-  create_table "posts", :force => true do |t|
-    t.string   "content"
-    t.string   "title"
-    t.string   "author"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
   create_table "ranks", :force => true do |t|
     t.string   "domain"
     t.text     "keyword"

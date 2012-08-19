@@ -16,6 +16,7 @@
 //= require backbone
 //= require backbone_rails_sync
 //= require backbone_datalink
+//= require "jquery.animate-colors.js"
 //= require backbone/rank_checker
 //= require_tree .
 _.templateSettings = {
