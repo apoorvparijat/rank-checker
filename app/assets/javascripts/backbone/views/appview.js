@@ -9,9 +9,10 @@ $(function(){
 			return this.template(rank);
 		}
 	});
+	RankView = RankList.Views.RankView;
 
 	RankList.Views.RankDetails = Backbone.View.extend({
-		tagName: "div",
+		tagName: "tr",
 		template: _.template($("#details-template").html()),
 		highlightLatest:function(){
 			$("#rank-details > .details").hide();
@@ -22,36 +23,37 @@ $(function(){
 			return this.template(rank)
 		},
 		updateResult: function(t,r,data){
+			$("#details-update-" + r.progress_id + " .bar").css("width",data.progress+"%");
 			if(data.progress >= 100){
 				$("#details-update-" + r.progress_id + " .bar").animate({
 					backgroundColor: "#558899",
 				},1000);
+				$("#details-update-" + r.progress_id + " .message").hide();
 				setTimeout(function(){$("#details-update-" + r.progress_id + " .progress").removeClass("active");
-					$("#details-update-" + r.progress_id + " .message").hide();
 				},1000);
 				if(data.rank  == 0){
 					$("#details-progress-" + r.progress_id + " .pane-rank").html("<span class=\"error\">The website is not ranking.</span>").fadeIn("fast");
-					
+
 					return;
 				}
-				
+
 				$("#details-progress-" + r.progress_id + " .pane-rank").html("Rank: " + data.rank).fadeIn("fast",function(){
 					$("#details-progress-" + r.progress_id + " .pane-page").html("Page: " + data.page).fadeIn("fast",function(){
-						
+
 						$("#details-progress-" + r.progress_id + " .pane-path").html("Page: " + data.path).fadeIn("fast",function(){
 							$("#details-progress-" + r.progress_id + " .pane-link").html("URI - <a target=\"_blank\" href='http://" + data.url + "'>" + data.url + "</a>").fadeIn("fast");
 						});
 					});	
 				});	
 			}
-			$("#details-update-" + r.progress_id + " .bar").css("width",data.progress+"%");
+
 			$("#details-update-" + r.progress_id + " .message").html(data.message);
-			
+
 		}
 	});
-
 	RankDetailsView = RankList.Views.RankDetails;
-	RankView = RankList.Views.RankView;
+	
+	
 	RankList.Views.AppView = Backbone.View.extend({
 		el: $("#ranklist-app"),
 		events: {
@@ -81,7 +83,12 @@ $(function(){
 			}
 			var view = new RankView({model: rank});
 			var detailsView = new RankDetailsView({model:rank});
-			this.$("#ranks").prepend(view.render());
+			var domainTr = null;
+			
+			$("#ranks tr").each(function(){
+				alert($("td:first-child",this).text());
+			});
+				this.$("#ranks").prepend(view.render());
 			el = $("#rank-details").append(detailsView.render());
 			detailsView.highlightLatest();
 			Ranks.Count++;
@@ -124,7 +131,7 @@ $(function(){
 		createRank: function(e){
 			
 			e.preventDefault();
-			
+
 			var params = this.newAttributes(e);
 			params["thread_str"] = Ranks.Count;
 			params["rank"] = 0;
@@ -162,6 +169,7 @@ $(function(){
 		},
 		
 		showDetails: function(event){
+
 			if(Ranks.hoverDisabled == 1)
 				return;
 			e = event.target;
