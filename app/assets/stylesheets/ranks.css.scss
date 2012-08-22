@@ -25,12 +25,28 @@
 	border-collapse:collapse;
 	z-index:100;
 	margin-left:1px;
+	.domains-list-body {
+		tr{
+			
+		}
+		tr:first-child{
+			td{
+				color:red;
+				font-style:italic;
+			}
+			&:hover{
+				background-color:white;
+				border-right:3px solid transparent;
+			}
+		}
+	}
+	
 }
 
 #ranks tr{
-
+	cursor:pointer;
 	td{
-		padding:5px 2px;
+		padding:5px 8px;
 		&:hover{
 			
 		}
@@ -47,6 +63,7 @@
 		}
 	}
 }
+
 
 
 #ranks thead tr{

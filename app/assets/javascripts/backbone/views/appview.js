@@ -3,7 +3,7 @@ $(function(){
 	Ranks.interval = {};
 	RankList.Views.RankView = Backbone.View.extend({
 		tagName: "tr",
-		template: _.template('<tr id="progress-{{= Ranks.Count }}" class="domains-list"> <td class="table-domain">{{= domain }}</td><td class="table-keyword">{{= keyword }}</td><td class="rank">{{= rank }}</td><td class="progress-num">0</td></tr>'),
+		template: _.template('<tr id="progress-{{= Ranks.Count }}" class="domains-list"> <td class="table-keyword" colspan="2">{{= keyword }}</td><td class="rank">{{= rank }}</td><td class="progress-num">0</td></tr>'),
 		render: function (){
 			var rank = this.model.toJSON();
 			return this.template(rank);
@@ -22,6 +22,7 @@ $(function(){
 			return this.template(rank)
 		},
 		updateResult: function(t,r,data){
+			$("#details-update-" + r.progress_id + " .bar").css("width",data.progress+"%");
 			if(data.progress >= 100){
 				$("#details-update-" + r.progress_id + " .bar").animate({
 					backgroundColor: "#558899",
@@ -31,7 +32,6 @@ $(function(){
 				},1000);
 				if(data.rank  == 0){
 					$("#details-progress-" + r.progress_id + " .pane-rank").html("<span class=\"error\">The website is not ranking.</span>").fadeIn("fast");
-					
 					return;
 				}
 				
@@ -44,7 +44,6 @@ $(function(){
 					});	
 				});	
 			}
-			$("#details-update-" + r.progress_id + " .bar").css("width",data.progress+"%");
 			$("#details-update-" + r.progress_id + " .message").html(data.message);
 			
 		}
@@ -61,6 +60,9 @@ $(function(){
 		},
 		initialize: function(){
 			Ranks.Count = 1;
+			Ranks.Domains = {};
+			Ranks.DomainAdded = {};
+			Ranks.DomainsCount = 1
 			Ranks.hoverDisabled = 0;
 			var t = this;
 			this.detailsUpdater = new RankDetailsView;
@@ -73,6 +75,7 @@ $(function(){
 			Ranks.fetch();
 		},
 		addOne: function(rank){
+			var t = this;
 			rank.set({progress_id: rank.id});
 			if(typeof (rank.message) == "undefined"){
 				rank.set({message: ""});
@@ -81,7 +84,19 @@ $(function(){
 			}
 			var view = new RankView({model: rank});
 			var detailsView = new RankDetailsView({model:rank});
-			this.$("#ranks").prepend(view.render());
+
+			if(typeof (Ranks.DomainAdded[rank.get("domain")]) == "undefined" || Ranks.DomainAdded[rank.get("domain")] == false){
+				Ranks.Domains[rank.get("domain")] = Ranks.DomainsCount;
+				t.$("#ranks").prepend("<tbody class='domains-list-body "+ Ranks.Domains[rank.get("domain")] +"'><tr><td colspan='4'>"+ rank.get("domain") +"</td></tr></tbody>");
+				//alert("#ranks ." + rank.get("domain"));
+				t.$("#ranks .domains-list-body." + Ranks.Domains[rank.get("domain")]).append(view.render());
+				Ranks.DomainAdded[rank.get("domain")] = true;
+				Ranks.DomainsCount++;
+			}else{
+				//alert(rank.get("domain") + ": " + Ranks.Domains[rank.get("domain")]);
+				t.$("#ranks ." + Ranks.Domains[rank.get("domain")]).append(view.render());
+			}
+			
 			el = $("#rank-details").append(detailsView.render());
 			detailsView.highlightLatest();
 			Ranks.Count++;
@@ -122,7 +137,6 @@ $(function(){
 			//r.save();
 		},
 		createRank: function(e){
-			
 			e.preventDefault();
 			
 			var params = this.newAttributes(e);

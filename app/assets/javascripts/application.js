@@ -47,7 +47,6 @@ jQuery.fn.serializeObject = function() {
       objectData[this.name] = value;
     }
   });
-
   return objectData;
 };
 
@@ -61,9 +60,3 @@ RankList = {
 		Backbone.history.start();
 	}
 };
-
-
-
-
-
-
