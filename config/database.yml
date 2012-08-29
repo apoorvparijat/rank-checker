@@ -38,6 +38,5 @@ production:
   database: rank-checker_production
   pool: 5
   username: root
-  password: shonen
   host: localhost
-
+  password: shonen
