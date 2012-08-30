@@ -1,6 +1,6 @@
 require 'checker.rb'
 class RanksController < ApplicationController
-  http_basic_authenticate_with :name => "apoorv", :password => "thering"
+  # http_basic_authenticate_with :name => "apoorv", :password => "thering"
   # GET /ranks
   # GET /ranks.json
   def index
