@@ -1,8 +1,11 @@
 require 'checker.rb'
 class RanksController < ApplicationController
+  before_filter :logged_in
   # http_basic_authenticate_with :name => "apoorv", :password => "thering"
   # GET /ranks
   # GET /ranks.json
+  
+  
   def index
     @ranks = Rank.all
 

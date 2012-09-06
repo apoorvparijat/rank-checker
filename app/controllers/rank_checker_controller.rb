@@ -3,7 +3,8 @@ class RankCheckerController < ApplicationController
   def index
     rip = request.remote_ip
     rip = rip.to_s.gsub /\./, ""
-    params["thread_str"] = "#{rip}-#{Time.now.to_i}"+"-"+ params["thread_str"]
+    user_id = session[:user_id] ? session[:user_id] : 0
+    params["thread_str"] = "#{rip}-#{Time.now.to_i}"+"-"+ params["thread_str"] + "-#{user_id}"
     FetcherSocket::get_rank params["thread_str"], params[:domain], params[:keyword]
     params[:rank] = "0"
     respond_to do |format|

@@ -3,9 +3,14 @@ RankChecker::Application.routes.draw do
   resources :ranks
 
   root :to => "rank_checker#index"
+  resources :users
+  
   match "rank-checker" => "rank_checker#index"
   match "rank-checker/api/" => "rank_checker#api"
   match "rank-checker/:id" => "rank_checker#show"
+  match "sessions/new" => "sessions#new"
+  match "sessions/create" => "sessions#create"
+  match "sessions/logout" => "sessions#destroy"
   
   # The priority is based upon order of creation:
   # first created -> highest priority.
