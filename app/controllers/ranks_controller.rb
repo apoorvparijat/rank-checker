@@ -7,7 +7,8 @@ class RanksController < ApplicationController
   
   
   def index
-    @ranks = Rank.all
+    @user = User.find(session[:user_id])
+    @ranks = @user.ranks
 
     respond_to do |format|
       format.html # index.html.erb

@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+gem 'bcrypt-ruby'
 gem 'faraday'
 group :development, :test do 
 	gem 'rspec-rails'

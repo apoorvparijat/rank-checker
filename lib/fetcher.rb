@@ -3,18 +3,22 @@ require 'socket'
 require 'rubygems'
 require 'active_record'
 require 'logger'
+require 'YAML'
 require_relative 'checker'
-ActiveRecord::Base.establish_connection(  
-:adapter => "mysql2",  
-:host => "localhost",  
-:database => "rank-checker_development"  
-)
+
+db_details = YAML::load(IO.read("../config/database.yml"))
+ActiveRecord::Base.establish_connection(db_details["development"])
 ActiveRecord::Base.logger = Logger.new(STDERR)
 
 require_relative '../app/models/rank'
 ##
 # FetcherThread instance is handled by threads. For each request, new FetcherThread object is created and the execution is allowed 
 # to be handled by threads.
+#
+# Usage for testing:
+#   f = FetcherThread.new
+#   f.thread_str = "ap-1-2-3"
+#   f.run
 class FetcherThread
   include Logging
   attr_accessor :thread_id,  :domain, :keyword, :rank, :client, :accessed
@@ -34,16 +38,11 @@ class FetcherThread
   def run
     
     @c.domain = @domain
-    client.puts "here"
-    #@rank = @c.getRank @keyword
+    @rank = @c.getRank @keyword
     # TODO: split +thread_str+ with delimiter "-". Last substring is the user_id. Use this to save the result in database against the +user_id+.
     user_id = @thread_str.split("-")
-    client.puts "here"
-    client.puts Rank.nil?
-    #r = Rank.new
-    #Rank.create(:domain => @domain, :keyword => @keyword, :page => @c.page, :rank => @rank, :position => @c.position, :url => @c.url, :path => @c.path, :user_id => user_id)
-    client.puts "here"
-    client.puts user_id[3]
+    
+    Rank.create(:domain => @domain, :keyword => @keyword, :page => @c.page, :rank => @rank, :position => @c.position, :url => @c.url, :path => @c.path, :user_id => user_id[3])
     
   end
   
@@ -158,7 +157,7 @@ class Fetcher
           sleep 3
           @@ft[type].accessed = true
         }
-        #client.close
+        client.close
       end
     end
   end
@@ -185,3 +184,4 @@ end
 
 f = Fetcher.new
 f.server
+
